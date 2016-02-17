@@ -1,4 +1,6 @@
 require 'gosu'
+require 'JSON'
+require_relative 'system_loader'
 
 class Game < Gosu::Window
   SCREEN_WIDTH = 1280
@@ -10,47 +12,9 @@ class Game < Gosu::Window
   START_Y = SCREEN_HEIGHT/2
   DEFAULT_LENGTH = 10
 
-  SYSTEMS = {
-    tree: {
-      axiom: '0',
-      angle: 45,
-      rules: {
-        '1' => '11',
-        '0' => '1[0]0'
-      }
-    },
-    triangle: {
-      axiom: 'a',
-      angle: 60,
-      rules: {
-        'a' => '=b-a-b=',
-        'b' => '-a=b=a-'
-      }
-    },
-    dragon: {
-      axiom: 'fx',
-      angle: 90,
-      rules: {
-        'x' => 'x=yf=',
-        'y' => '-fx-y'
-      }
-    },
-    plant: {
-      axiom: 'x',
-      angle: -25,
-      rules: {
-        'x' => 'f−[[x]=x]=f[=fx]−x',
-        'f' => 'ff'
-      }
-    },
-    koch: {
-      axiom: 'f',
-      angle: 90,
-      rules: {
-        'f' => 'f=f-f-f=f'
-      }
-    },
-  }
+  SYSTEMS_JSON_FILE = "systems.json"
+
+  SYSTEMS = SystemLoader.new(SYSTEMS_JSON_FILE).call
 
   SYSTEM_NUMBER = SYSTEMS.map.with_index do |hash, i|
     [i+1, hash.first]
@@ -61,6 +25,7 @@ class Game < Gosu::Window
   def initialize(width: SCREEN_WIDTH, height: SCREEN_HEIGHT, fullscreen: false)
     super(width, height, fullscreen)
     self.caption = "things"
+    puts SYSTEMS
     start
   end
 
